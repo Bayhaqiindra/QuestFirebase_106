@@ -2,6 +2,22 @@ package com.example.pertemuan14.ui.viewmodel
 
 import com.example.pertemuan14.model.Mahasiswa
 
+fun insertMhs () {
+    if (validateFields ()) {
+        viewModelScope.launch {
+            uiState = FormState. Loading
+            try {
+                mhs.insertMhs (uiEvent.insertUiEvent.toMhsModel () )
+                uiState = FormState. Success ("Data berhasil disimpan")
+            } catch (e: Exception) {
+                uiState = FormState. Error ("Data gagal disimpan")
+            }
+        }
+    } else {
+        uiState = FormState. Error ("Data tidak valid")
+    }
+}
+
 sealed class FormState {
     object Idle : FormState ()
     object Loading : FormState ()
