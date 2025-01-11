@@ -2,6 +2,20 @@ package com.example.pertemuan14.ui.viewmodel
 
 import com.example.pertemuan14.model.Mahasiswa
 
+fun validateFields () : Boolean {
+    val event = uiEvent.insertUiEvent
+    val errorState = FormErrorState(
+        nim = if (event.nim.isNotEmpty()) null else "NIM tidak boleh kosong",
+        nama = if (event.nama.isNotEmpty()) null else "Nama tidak boleh Kosong",
+        gender = if (event.gender.isNotEmpty()) null else "Jenis Kelamin tidak boleh Kosong",
+        alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh Kosong",
+        kelas = if (event.kelas.isNotEmpty()) null else "Kelas tidak boleh Kosong",
+        angkatan = if (event.angkatan.isNotEmpty()) null else "Angkatan tidak boleh Kosong",
+    )
+    uiEvent = uiEvent.copy(isEntryValid = errorState)
+    return errorState.isValid()
+}
+
 fun insertMhs () {
     if (validateFields ()) {
         viewModelScope.launch {
