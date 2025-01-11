@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "438677834587",
+    "project_id": "mobilelanjut-9a02c",
+    "storage_bucket": "mobilelanjut-9a02c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:438677834587:android:3fad756add7c8984a2687e",
+        "android_client_info": {
+          "package_name": "com.example.pertemuan14"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH7dMa0BNEyLEjwxM1zOTQrbth1Xbgfik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
