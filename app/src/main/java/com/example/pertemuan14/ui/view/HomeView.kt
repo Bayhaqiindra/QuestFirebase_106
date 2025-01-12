@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan14.R
 import com.example.pertemuan14.model.Mahasiswa
+import com.example.pertemuan14.navigation.DestinasiHome
+import com.example.pertemuan14.ui.customwidget.TopAppBar
 import com.example.pertemuan14.ui.viewmodel.HomeUiState
 import com.example.pertemuan14.ui.viewmodel.HomeViewModel
 import com.example.pertemuan14.ui.viewmodel.PenyediaViewModel
@@ -64,6 +66,12 @@ fun HomeScreen(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
+            TopAppBar(
+                judul = "Daftar Mahasiswa",
+                showBackButton = false,
+                onBack = { },
+                modifier = modifier
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -82,6 +90,7 @@ fun HomeScreen(
             onDetailClick = onDetailClick,
             onDeleteClick = {
                 viewModel.deleteMhs(it)
+                viewModel.getMhs()
             }
         )
     }
@@ -95,7 +104,7 @@ fun HomeStatus(
     onDeleteClick: (Mahasiswa) -> Unit = {},
     onDetailClick: (String) -> Unit
 ) {
-    var deleteConfirmationRequired by rememberSaveable {
+    var deleteConfirm by rememberSaveable {
         mutableStateOf<Mahasiswa?>(null)
     }
 
@@ -108,17 +117,19 @@ fun HomeStatus(
                 listMhs = homeUiState.data,
                 modifier = modifier.fillMaxWidth(),
                 onClick = { onDetailClick(it) },
-                onDelete = { onDeleteClick(it) }
+                onDelete = { mahasiswa ->
+                    deleteConfirm = mahasiswa
+                }
             )
-            deleteConfirmationRequired?.let { data ->
+            deleteConfirm?.let { data ->
                 DeleteConfirmationDialog(
                     onDeleteConfirm = {
                         onDeleteClick(data)
-                        deleteConfirmationRequired = null
+                        deleteConfirm= null
                     },
                     onDeleteCancel = {
-                        deleteConfirmationRequired = null
-                    },
+                        deleteConfirm = null
+                    }
                 )
             }
         }
@@ -168,29 +179,28 @@ fun OnError(
 }
 
 @Composable
-fun ListMahasiswa (
+fun ListMahasiswa(
     listMhs: List<Mahasiswa>,
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit = { },
-    onDelete: (Mahasiswa) -> Unit = { }
-
-) {
+    onDelete: (Mahasiswa) -> Unit = { },
+    onClick: (String) -> Unit = { }
+){
     LazyColumn(
         modifier = modifier
-
     ) {
         items(
             items = listMhs,
-            itemContent = { mhs ->
+            itemContent = {mhs ->
                 CardMhs(
-                    onDelete = { onDelete(mhs)},
+                    onDelete = {onDelete(mhs)},
                     mhs = mhs,
-                    onClick = { onClick(mhs.nim) }
+                    onClick = { onClick(mhs.nim)}
                 )
             }
         )
     }
 }
+
 
 @Composable
 fun CardMhs (
@@ -231,11 +241,9 @@ fun CardMhs (
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
-                Spacer(modifier = Modifier.padding(4.dp))
-                IconButton(onClick = {
-                    onDelete(mhs)
-                }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "")
+                Spacer(modifier.weight(1f))
+                IconButton(onClick = { onDelete(mhs) }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Hapus Mahasiswa")
                 }
             }
             Row (
@@ -256,8 +264,8 @@ fun CardMhs (
 @Composable
 private fun DeleteConfirmationDialog (
     onDeleteConfirm: () -> Unit,
-    onDeleteCancel: () -> Unit, modifier: Modifier =
-        Modifier
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AlertDialog(onDismissRequest = { /* Do nothing */ },
         title = { Text("Delete Data") },
