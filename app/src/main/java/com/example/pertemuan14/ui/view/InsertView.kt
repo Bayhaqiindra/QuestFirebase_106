@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -23,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,11 +54,13 @@ fun InsertMhsView(
     onNavigate: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InsertViewModel = viewModel(factory = PenyediaViewModel.Factory)
+
 ){
     val uiState = viewModel.uiState
     val uiEvent= viewModel.uiEvent
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(uiState) {
         when(uiState){
@@ -82,7 +88,7 @@ fun InsertMhsView(
         }
     }
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
@@ -123,8 +129,12 @@ fun InsertBodyMhs(
     onClick: () -> Unit,
     homeUiState: FormState
 ){
+    val scrollState = rememberScrollState()
+
     Column (
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -279,6 +289,36 @@ fun FormMahasiswa(
         )
         Text(
             text = errorState.angkatan?: "",
+            color = Color.Red
+        )
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = mahasiswaEvent.dosenpembimbing1,
+            onValueChange = {
+                onValueChange(mahasiswaEvent.copy(dosenpembimbing1 = it))
+            },
+            label = {Text(text = "Dosen Pembimbing 1")},
+            isError = errorState.dosenpembimbing1 !=null,
+            placeholder = {Text(text = "Masukkan Nama Dosen Pembimbing 1")},
+        )
+        Text(
+            text = errorState.dosenpembimbing1?: "",
+            color = Color.Red
+        )
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = mahasiswaEvent.dosenpembimbing2,
+            onValueChange = {
+                onValueChange(mahasiswaEvent.copy(dosenpembimbing2 = it))
+            },
+            label = {Text(text = "Dosen Pembimbing 2")},
+            isError = errorState.nama !=null,
+            placeholder = {Text(text = "Masukkan Nama Dosen Pembimbing 2")},
+        )
+        Text(
+            text = errorState.dosenpembimbing2?: "",
             color = Color.Red
         )
     }

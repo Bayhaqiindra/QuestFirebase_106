@@ -33,7 +33,11 @@ class InsertViewModel (
             alamat = if (event.alamat.isNotEmpty()) null else "Alamat tidak boleh Kosong",
             kelas = if (event.kelas.isNotEmpty()) null else "Kelas tidak boleh Kosong",
             angkatan = if (event.angkatan.isNotEmpty()) null else "Angkatan tidak boleh Kosong",
+            dosenpembimbing1 = if (event.dosenpembimbing1.isNotEmpty()) null else "Dosen Pembimbing 1 tidak boleh Kosong",
+            dosenpembimbing2 = if (event.dosenpembimbing2.isNotEmpty()) null else "Dosen Pembimbing 2 tidak boleh Kosong",
+            judulskripsi = if (event.judulskripsi.isNotEmpty()) null else "Judul Skripsi tidak boleh Kosong",
         )
+
         uiEvent = uiEvent.copy(isEntryValid = errorState)
         return errorState.isValid()
     }
@@ -81,11 +85,16 @@ data class FormErrorState(
     val gender: String? = null,
     val alamat: String? = null,
     val kelas: String? = null,
-    val angkatan: String? = null
+    val angkatan: String? = null,
+    val dosenpembimbing1: String? = null,
+    val dosenpembimbing2: String? = null,
+    val judulskripsi: String? = null,
 ) {
     fun isValid(): Boolean {
         return nim == null && nama == null && gender == null &&
                 alamat == null && kelas == null && angkatan == null
+                && dosenpembimbing1 == null && dosenpembimbing2 == null
+                && judulskripsi == null
     }
 }
 
@@ -95,7 +104,10 @@ data class MahasiswaEvent(
     val alamat: String = "",
     val gender: String = "",
     val kelas: String = "",
-    val angkatan: String = ""
+    val angkatan: String = "",
+    val dosenpembimbing1: String = "",
+    val dosenpembimbing2: String = "",
+    val judulskripsi: String = "",
 )
 
 fun MahasiswaEvent.toMhsModel(): Mahasiswa = Mahasiswa(
@@ -104,5 +116,8 @@ fun MahasiswaEvent.toMhsModel(): Mahasiswa = Mahasiswa(
     alamat = alamat,
     gender = gender,
     kelas = kelas,
-    angkatan = angkatan
+    angkatan = angkatan,
+    dosenpembimbing1 = dosenpembimbing1,
+    dosenpembimbing2 = dosenpembimbing2,
+    judulskripsi = judulskripsi,
 )
